@@ -66,6 +66,13 @@ def compute_len(powers):
 		length += power
 	return length
 
+def min_len(powers):
+	length = 0
+	for (_, power) in powers:
+		if str != type(power):
+			length += power
+	return length
+
 def choose_random_word(powers):
 	found_valid_word = False
 	while not found_valid_word:
@@ -84,7 +91,7 @@ def choose_random_word(powers):
 		w = merge_powers(w)
 		print("Computed random w:", w)
 		try:
-			pumping_len = randrange(1, compute_len(w) + 1)
+			pumping_len = randrange(min_len(powers) + 1, compute_len(w) + 1)
 			print("Computed pumping length:", pumping_len)
 		except:
 			found_valid_word = False
@@ -287,3 +294,9 @@ def main():
 
 if __name__ == "__main__":
 	main();
+
+'''
+Problems:
+aaa^n. Pick w = aa, p.len = 1. x = '', y = a, k = 0.
+Fixed by making p.len bigger than minnimum word len
+'''
