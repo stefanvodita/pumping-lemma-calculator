@@ -3,21 +3,34 @@ from random import randrange
 import ipdb
 import parser
 
-alphabet = "ab"
-w_picks = 100
-k_picks = 10
-max_exponent = 25
+
+alphabet = "ab"    # all characters in the alphabet in a string
+w_picks = 100      # we try 100 different, random words
+k_picks = 10       # we try k in range(k_picks)
+max_exponent = 25  # no point in picking a^100 when the language is a^n
+
 
 def is_digit(character):
+	"""
+	Checks whether a CHARACTER is a digit. NOT for numbers.
+	"""
 	return character >= '0' and character <= '9'
 
+
 def merge_powers(powers):
+	"""
+	There is no point in having w = [('a', 1), ('a', 1)],
+	when we could have w = [('a', 2)].
+	"""
+
+	# delete powers with exponent 0
 	non_redundant_powers = []
 	for power in powers:
 		if power[1] != 0:
 			non_redundant_powers.append(power)
 	powers = non_redundant_powers
 
+	# merge
 	merged_powers = []
 	i = 0
 	while i < len(powers):
@@ -32,6 +45,10 @@ def merge_powers(powers):
 
 
 def parse_element(element):
+	"""
+	Transform a language expressed as string, into a list of tuples.
+	E.g: aa^nb ---> [('a', 1), ('a', 'n'), ('b', 1)]
+	"""
 	powers = []
 	i = 0
 	while i < len(element):
@@ -62,20 +79,34 @@ def parse_element(element):
 	print("Rewrote language as:", powers)
 	return powers
 
+
 def compute_len(powers):
+	"""
+	Returns the sum of all exponents
+	"""
 	length = 0
 	for (_, power) in powers:
 		length += power
 	return length
 
+
 def min_len(powers):
+	"""
+	Every word has a minimum length
+	(when all the variables appearing as exponents are 0).
+	"""
 	length = 0
 	for (_, power) in powers:
 		if str != type(power):
 			length += power
 	return length
 
+
 def choose_random_word(powers):
+	"""
+	Create a random word matching the given parameter
+	and pick a random pumping length.
+	"""
 	found_valid_word = False
 	while not found_valid_word:
 		found_valid_word = True
@@ -99,6 +130,7 @@ def choose_random_word(powers):
 			found_valid_word = False
 	return pumping_len, w
 
+
 def pick_x(w, n):
 	x = []
 	length = 0
@@ -111,24 +143,27 @@ def pick_x(w, n):
 			print("x =", x)
 			return x
 
+
 def pick_y(w, i, j):
 	y = []
 	lengthx = 0
 	lengthy = 0
 	k = 0
+	
+	# pass x
 	power = w[k][1]
 	while lengthx + power < i:
 		lengthx += power
 		k += 1
 		power = w[k][1]
+	
+	# build y
 	power = power - i + lengthx
 	while lengthy + power < j - i:
 		lengthy += power
 		y.append((w[k][0], power))
 		k += 1
 		power = w[k][1]
-	# y.append((w[k][0], min(power - (j - i) + lengthy, j - i)))
-	# y.append((w[k][0], min(power - (j - i) + lengthy + 1, j - i)))
 	if y:
 		y.append((w[k][0], j - i - lengthy))
 	else:
@@ -136,15 +171,20 @@ def pick_y(w, i, j):
 	print("y =", y)
 	return y
 
+
 def pick_z(w, j):
 	z = []
 	lengthxy = 0
 	k = 0
+	
+	# pass xy
 	power = w[k][1]
 	while lengthxy + power < j:
 		lengthxy += power
 		k += 1
 		power = w[k][1]
+	
+	# build z
 	z.append((w[k][0], power - j + lengthxy))
 	k += 1
 	while k < len(w):
@@ -155,23 +195,40 @@ def pick_z(w, j):
 
 
 def split_word(w, n):
+	"""
+	Return all possible x, y, z divisions as tuples in a list.
+	"""
 	res = []
-	for i in range(n):
+	for i in range(n):  # x has length i
 		x = pick_x(w, i)
-		for j in range(i + 1, n + 1):
+		for j in range(i + 1, n + 1):  # xy has length j
 			y = pick_y(w, i, j)
 			z = pick_z(w, j)
 			res.append((x, y, z))
-	#print("xyx =", res)
 	return res
 
+
 def word_power(w, k):
+	"""
+	Compute w^k.
+
+	E.g: w = [('a', 1)]
+	w^0 = [('', 0)]
+	w^1 = [('a', 1)]
+	w^2 = [('a', 1), ('a', 1)]
+	"""
 	res = []
 	for i in range(k):
 		res += w
 	return res if res else [('', 0)]
 
+
 def select_first_power(w):
+	"""
+	Select the first power, ensuring that
+	we merge powers with the same base.
+	E.g: [('a', 1), ('a', 'n')] returns itself
+	"""
 	first_power = []
 	i = 0
 	for el in w:
@@ -181,11 +238,16 @@ def select_first_power(w):
 		i += 1
 	return first_power, w[i:]
 
+
 def select_exponents(w):
+	"""
+	Return a list of all the exponents in w
+	"""
 	exponents = []
 	for (_, exponent) in w:
 		exponents.append(exponent)
 	return exponents
+
 
 def rec_compute_values(count, step, target, exponents, values):
 	if count == 0:
@@ -201,6 +263,13 @@ def rec_compute_values(count, step, target, exponents, values):
 
 
 def check_inclusion(w, powers, conditions):
+	"""
+	w: x y^k z
+	powers: the language
+	conditions: used to keep things such as n = 6
+	"""
+
+	# either w or powers is empty
 	if not w and not powers:
 		return True
 	if not w:
@@ -214,6 +283,7 @@ def check_inclusion(w, powers, conditions):
 				return False
 		return True
 	
+	# first power does not match
 	first_power, rest_power = select_first_power(powers)
 	if w[0][0] != powers[0][0]:
 		for power in first_power:
@@ -227,6 +297,7 @@ def check_inclusion(w, powers, conditions):
 				return False
 		return check_inclusion(w, rest_power, conditions)
 	
+	# common case
 	exponents = select_exponents(first_power)
 	variables = []
 	total_exponent = 0
@@ -243,13 +314,9 @@ def check_inclusion(w, powers, conditions):
 		return False
 	if total_exponent == w[0][1]:
 		return check_inclusion(w[1:], rest_power, conditions)
-	# w = [(w[0][0], w[0][1] - total_exponent)] + w[1:]
 	values = rec_compute_values(len(variables), 0, w[0][1] - total_exponent, \
 		                        [None for i in range(len(variables))], [])
-	# values = rec_compute_values(len(variables), 0, w[0][1], \
-	# 	                        [None for i in range(len(variables))], [])
 	if not values:
-		# ipdb.set_trace()
 		return check_inclusion(w[1:], rest_power, conditions)
 	for value in values:
 		for i, exponent in enumerate(value):
@@ -269,11 +336,14 @@ def main():
 	for i in range(w_picks):  # try this many times
 		pumping_len, w = choose_random_word(powers)
 		xyz = split_word(w, pumping_len)
-		xyz_bool_acc = False
+		xyz_bool_acc = False  # True = at least one xyz validates the lemma
+							  # False = no xyz validates the lemma
 		for x, y, z in xyz:
 			print("x, y, z =", x, y, z)
-			k_bool_acc = True
-			for k in range(k_picks):
+			k_bool_acc = True  # True = all k validate the lemma
+			                   # False = there is at least one k
+			                   #         that invalidates the lemma
+			for k in range(k_picks):  # try consecutive k
 				y_pow_k = word_power(y, k)
 				print("y^k = ", y_pow_k)
 				new_w = x + y_pow_k + z
@@ -282,9 +352,6 @@ def main():
 				if not check_inclusion(new_w, powers, {}):
 					k_bool_acc = False
 					break
-					# print("Non-regular language")
-					# return
-			# xyz_bool_acc = xyz_bool_acc or k_bool_acc
 			if k_bool_acc:
 				xyz_bool_acc = True
 				break
