@@ -1,0 +1,12 @@
+# pycache
+__pycache__/
+
+# antlr generated files
+*.interp
+*.tokens
+*Lexer.py
+*Listener.py
+*Parser.py
+
+# debugging
+out

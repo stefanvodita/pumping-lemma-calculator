@@ -1,5 +1,7 @@
 from random import randrange
+
 import ipdb
+import parser
 
 alphabet = "ab"
 w_picks = 100
@@ -223,7 +225,7 @@ def check_inclusion(w, powers, conditions):
 					conditions[power[1]] = 0
 			elif power[1] != 0:
 				return False
-		return check_inclusion(w[1:], rest_power, conditions)
+		return check_inclusion(w, rest_power, conditions)
 	
 	exponents = select_exponents(first_power)
 	variables = []
@@ -297,6 +299,13 @@ if __name__ == "__main__":
 
 '''
 Problems:
+
 aaa^n. Pick w = aa, p.len = 1. x = '', y = a, k = 0.
 Fixed by making p.len bigger than minnimum word len
+
+This doesn not work with finite sets. Easy to add a condition.
+Should I?
+
+a^nb
+Fixed
 '''
