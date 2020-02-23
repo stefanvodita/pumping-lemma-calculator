@@ -102,7 +102,11 @@ def min_len(powers):
 	return length
 
 
-def choose_random_word(powers):
+def check_conditions(w, conditions, exponent_values):
+	return parser.parse(conditions, w, exponent_values)
+
+
+def choose_random_word(powers, conditions):
 	"""
 	Create a random word matching the given parameter
 	and pick a random pumping length.
@@ -128,6 +132,11 @@ def choose_random_word(powers):
 			print("Computed pumping length:", pumping_len)
 		except:
 			found_valid_word = False
+
+		if found_valid_word:
+			print("Checking conditions...")
+			found_valid_word = check_conditions(w, conditions, exponent_value)
+			print("Conditions passed!" if found_valid_word else "Conditions failed :(")		
 	return pumping_len, w
 
 
@@ -334,7 +343,7 @@ def main():
 
 	powers = parse_element(element)
 	for i in range(w_picks):  # try this many times
-		pumping_len, w = choose_random_word(powers)
+		pumping_len, w = choose_random_word(powers, conditions)
 		xyz = split_word(w, pumping_len)
 		xyz_bool_acc = False  # True = at least one xyz validates the lemma
 							  # False = no xyz validates the lemma

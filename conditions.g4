@@ -5,9 +5,9 @@ grammar conditions;
  */
 
 conditions
-	: 
-	| condition
-	| condition ',' ' ' conditions
+	: '.'
+	| condition '.'
+	| condition ',' conditions
 	;
 
 condition
