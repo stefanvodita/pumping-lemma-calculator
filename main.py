@@ -358,7 +358,9 @@ def main():
 				new_w = x + y_pow_k + z
 				new_w = merge_powers(new_w)
 				print("neww =", new_w)
-				if not check_inclusion(new_w, powers, {}):
+				exponent_values = {}
+				if not check_inclusion(new_w, powers, exponent_values) \
+				or not check_conditions(new_w, conditions, exponent_values):
 					k_bool_acc = False
 					break
 			if k_bool_acc:
@@ -384,4 +386,10 @@ Should I?
 
 a^nb
 Fixed
+
+
+a^N|N>5. x='', y=a, z=5*a, n=1, k=0
+Maybe k != 0 after all.
+
+Multiple solutions for exponent matching?
 '''
