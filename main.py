@@ -4,10 +4,11 @@ import ipdb
 import parser
 
 
-alphabet = "ab"    # all characters in the alphabet in a string
-w_picks = 100      # we try 100 different, random words
-k_picks = 10       # we try k in range(k_picks)
-max_exponent = 25  # no point in picking a^100 when the language is a^n
+alphabet = "ab"		# all characters in the alphabet in a string
+variables = "NM"	# all variables in a string
+w_picks = 100		# we try 100 different, random words
+k_picks = 10		# we try k in range(k_picks)
+max_exponent = 25	# no point in picking a^100 when the language is a^n
 
 
 def is_digit(character):
@@ -335,14 +336,16 @@ def check_inclusion(w, powers, conditions):
 	return False
 
 
-def main():
-	description = input()
+def main(lang_desc):
+	description = lang_desc
 	element, conditions = description.split('|')
 	element = element.strip()
 	conditions = conditions.strip()
 
+	data = {"k_stop" : None, "no_w_stop" : None, "res" : None}
+
 	powers = parse_element(element)
-	for _ in range(w_picks):  # try this many times
+	for i in range(w_picks):  # try this many times
 		pumping_len, w = choose_random_word(powers, conditions)
 		xyz = split_word(w, pumping_len)
 		xyz_bool_acc = False  # True = at least one xyz validates the lemma
@@ -362,18 +365,23 @@ def main():
 				if not check_inclusion(new_w, powers, exponent_values) \
 				or not check_conditions(new_w, conditions, exponent_values):
 					k_bool_acc = False
+					data["k_stop"] = k
 					break
 			if k_bool_acc:
 				xyz_bool_acc = True
 				break
 		if not xyz_bool_acc:
+			data["no_w_stop"] = i
+			data["res"] = 0
 			print("Non-regular language")
-			return
+			return data
+	data["res"] = 1
 	print("Regular language... probably")
+	return data
 
 
 if __name__ == "__main__":
-	main()
+	print(main(input()))
 
 '''
 Problems:
