@@ -242,7 +242,7 @@ def select_first_power(w):
 	i = 0
 	for el in w:
 		if el[0] != w[0][0]:
-			break;
+			break
 		first_power.append(el)
 		i += 1
 	return first_power, w[i:]
@@ -342,7 +342,7 @@ def main():
 	conditions = conditions.strip()
 
 	powers = parse_element(element)
-	for i in range(w_picks):  # try this many times
+	for _ in range(w_picks):  # try this many times
 		pumping_len, w = choose_random_word(powers, conditions)
 		xyz = split_word(w, pumping_len)
 		xyz_bool_acc = False  # True = at least one xyz validates the lemma
@@ -352,7 +352,7 @@ def main():
 			k_bool_acc = True  # True = all k validate the lemma
 			                   # False = there is at least one k
 			                   #         that invalidates the lemma
-			for k in range(k_picks):  # try consecutive k
+			for k in range(2, k_picks):  # try consecutive k
 				y_pow_k = word_power(y, k)
 				print("y^k = ", y_pow_k)
 				new_w = x + y_pow_k + z
@@ -373,7 +373,7 @@ def main():
 
 
 if __name__ == "__main__":
-	main();
+	main()
 
 '''
 Problems:
@@ -390,6 +390,7 @@ Fixed
 
 a^N|N>5. x='', y=a, z=5*a, n=1, k=0
 Maybe k != 0 after all.
+DONE
 
 Multiple solutions for exponent matching?
 '''

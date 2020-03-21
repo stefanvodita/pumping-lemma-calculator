@@ -54,7 +54,7 @@ class ConditionsListener(conditionsListener):
                 f = lambda a, b: a // b
             elif ctx.getChild(1).getText() == '%':
                 f = lambda a, b: a % b
-            ret = f(self.exitOperand(ctx.getChild(0)), self.exitOperand(ctx.getChild(2)))
+            ret = f(self.exitOperand(ctx.getChild(0)), self.exitExpression(ctx.getChild(2)))
         else:
             ret = self.exitOperand(ctx.getChild(0))
         # print("Exit exitExpression with", ret)
@@ -82,7 +82,8 @@ class ConditionsListener(conditionsListener):
         if ctx.NUMBER():
             ret = int(ctx.getChild(0).getText())
         elif ctx.VARIABLE():
-            ret = self.conditions[ctx.getChild(0).getText()]
+            # ret = self.conditions[ctx.getChild(0).getText()]
+            ret = self.conditions.get(ctx.getChild(0).getText(), 0)
         elif ctx.CHARACTER():
         	# TODO
             pass
