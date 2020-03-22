@@ -1,49 +1,48 @@
 #
-a^N|.
-a^N|N>5.
-a^N|N<5.
-a^N|N>=5.
-a^N|N<=5.
-a^N|N!=5.
+a^N|. 1
+a^N|N>5. 1
+a^N|N<5. 1
+a^N|N>=5. 1
+a^N|N<=5. 1
+a^N|N!=5. 1
 #
-a^Nb|.
-a^Nb|N>5.
-a^Nb|N<5.
-a^Nb|N>=5.
-a^Nb|N<=5.
-a^Nb|N!=5.
+a^Nb|. 1
+a^Nb|N>5. 1
+a^Nb|N<5. 1
+a^Nb|N>=5. 1
+a^Nb|N<=5. 1
+a^Nb|N!=5. 1
 #
-ba^N|.
-ba^N|N>5.
-ba^N|N<5.
-ba^N|N>=5.
-ba^N|N<=5.
-ba^N|N!=5.
+ba^N|. 1
+ba^N|N>5. 1
+ba^N|N<5. 1
+ba^N|N>=5. 1
+ba^N|N<=5. 1
+ba^N|N!=5. 1
 #
-a^Nb^M|.
-a^Nb^M|N>5.
-a^Nb^M|N<5.
-a^Nb^M|N>=5.
-a^Nb^M|N<=5.
-a^Nb^M|N!=5.
+a^Nb^M|. 1
+a^Nb^M|N>5. 1
+a^Nb^M|N<5. 1
+a^Nb^M|N>=5. 1
+a^Nb^M|N<=5. 1
+a^Nb^M|N!=5. 1
 #
-a^Nb^M|.
-a^Nb^M|N>5,M>5.
-a^Nb^M|N<5,M<5.
-a^Nb^M|N>=5,M<=5.
-a^Nb^M|N<=5,M>=5.
-a^Nb^M|N!=5,M!=5.
+a^Nb^M|N>5,M>5. 1
+a^Nb^M|N<5,M<5. 1
+a^Nb^M|N>=5,M<=5. 1
+a^Nb^M|N<=5,M>=5. 1
+a^Nb^M|N!=5,M!=5. 1
 #
-a^Nb^M|N<M.
-a^Nb^M|N>M.
-a^Nb^M|N<=M.
-a^Nb^M|N>=M.
-a^Nb^M|N==M.
-a^Nb^M|N!=M.
+a^Nb^M|N<M. 0
+a^Nb^M|N>M. 0
+a^Nb^M|N<=M. 0
+a^Nb^M|N>=M. 0
+a^Nb^M|N==M. 0
+a^Nb^M|N!=M. 0
 #
-a^Nb^M|N+M>5.
-a^Nb^M|N+M<5.
-a^Nb^M|N-M>5.
-a^Nb^M|N-M<5.
-a^Nb^M|N*M>5.
-a^Nb^M|N*M<5.
+a^Nb^M|N+M>5. 1
+a^Nb^M|N+M<5. 1
+a^Nb^M|N-M>5. 0
+a^Nb^M|N-M<5. 0
+a^Nb^M|N*M>5. 1
+a^Nb^M|N*M<5. 1

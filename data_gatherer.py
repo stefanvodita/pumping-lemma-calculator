@@ -26,18 +26,18 @@ def count_conditions(lang_desc):
 	return len(conds)
 
 
-def write_data(outputs, lang_desc, data):
+def write_data(outputs, lang_desc, verdict, data):
 	char_no = count_chars(lang_desc)
 	var_no = count_vars(lang_desc)
 	cond_no = count_conditions(lang_desc)
-	line = ','.join([lang_desc.strip(),													\
+	line = ','.join(["\"" + lang_desc.strip() + "\"",									\
 					str(char_no),														\
 					str(var_no),														\
 					str(cond_no),														\
 					str(data["k_stop"])		if not data["k_stop"] is None else "",		\
 					str(data["no_w_stop"])	if not data["no_w_stop"] is None else "",	\
 					str(data["res"])		if not data["res"] is None else "",			\
-					""]) + "\n"
+					verdict.strip()]) + "\n"
 	outputs.write(line)
 
 
@@ -47,7 +47,10 @@ def gather(in_file, outputs):
 			if lang_desc[0] == '#':
 				outputs.write("#\n")
 				continue
-			write_data(outputs, lang_desc, main.main(lang_desc))
+			[lang_desc, verdict] = lang_desc.split(' ')
+			lang_desc.strip()
+			verdict.strip()
+			write_data(outputs, lang_desc, verdict, main.main(lang_desc))
 
 
 if __name__ == "__main__":
