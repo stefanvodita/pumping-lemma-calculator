@@ -11,3 +11,6 @@ __pycache__/
 # debugging
 in
 out
+
+# graphs
+*.png
