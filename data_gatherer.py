@@ -41,7 +41,17 @@ def write_data(outputs, lang_desc, verdict, data):
 	outputs.write(line)
 
 
-def gather(in_file, outputs):
+def average(lang_desc, tries):
+	avg = {"k_stop" : 0, "no_w_stop" : 0, "res" : 0}
+	for _ in range(tries):
+		data = main.main(lang_desc)
+		if data["res"]:
+			return data
+		avg = {key: avg[key] + data[key] for key in avg.keys()}
+	return {key: value / tries for key, value in avg.items()}
+
+
+def gather(in_file, outputs, tries):
 	with open(in_file, "r") as inputs:
 		for lang_desc in inputs:
 			if lang_desc[0] == '#':
@@ -50,8 +60,8 @@ def gather(in_file, outputs):
 			[lang_desc, verdict] = lang_desc.split(' ')
 			lang_desc.strip()
 			verdict.strip()
-			write_data(outputs, lang_desc, verdict, main.main(lang_desc))
+			write_data(outputs, lang_desc, verdict, average(lang_desc, tries))
 
 
 if __name__ == "__main__":
-	gather("inputs", open("data.csv", "a"))
+	gather("inputs", open("data.csv", "a"), 3)

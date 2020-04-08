@@ -381,6 +381,8 @@ def main(lang_desc):
 			data["res"] = 0
 			print("Non-regular language")
 			return data
+	data["k_stop"] = None
+	data["no_w_stop"] = None
 	data["res"] = 1
 	print("Regular language... probably")
 	return data
