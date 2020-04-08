@@ -130,7 +130,7 @@ def choose_random_word(powers, conditions):
 		print("Computed random w:", w)
 		try:
 			pumping_len = randrange(min_len(powers) + 1, compute_len(w) + 1)
-			print("Computed pumping length:", pumping_len)
+			# print("Computed pumping length:", pumping_len)
 		except:
 			found_valid_word = False
 
@@ -346,31 +346,37 @@ def main(lang_desc):
 
 	powers = parse_element(element)
 	for i in range(w_picks):  # try this many times
-		pumping_len, w = choose_random_word(powers, conditions)
-		xyz = split_word(w, pumping_len)
-		xyz_bool_acc = False  # True = at least one xyz validates the lemma
-							  # False = no xyz validates the lemma
-		for x, y, z in xyz:
-			print("x, y, z =", x, y, z)
-			k_bool_acc = True  # True = all k validate the lemma
-			                   # False = there is at least one k
-			                   #         that invalidates the lemma
-			for k in range(2, k_picks):  # try consecutive k
-				y_pow_k = word_power(y, k)
-				print("y^k = ", y_pow_k)
-				new_w = x + y_pow_k + z
-				new_w = merge_powers(new_w)
-				print("neww =", new_w)
-				exponent_values = {}
-				if not check_inclusion(new_w, powers, exponent_values) \
-				or not check_conditions(new_w, conditions, exponent_values):
-					k_bool_acc = False
-					data["k_stop"] = k
+		pump_bool_acc = False
+		_, w = choose_random_word(powers, conditions)
+		for pumping_len in range(1, compute_len(w) + 1):
+			print("pumping_len =", pumping_len)
+			xyz = split_word(w, pumping_len)
+			xyz_bool_acc = False  # True = at least one xyz validates the lemma
+								  # False = no xyz validates the lemma
+			for x, y, z in xyz:
+				print("x, y, z =", x, y, z)
+				k_bool_acc = True  # True = all k validate the lemma
+				                   # False = there is at least one k
+				                   #         that invalidates the lemma
+				for k in range(2, k_picks):  # try consecutive k
+					y_pow_k = word_power(y, k)
+					print("y^k = ", y_pow_k)
+					new_w = x + y_pow_k + z
+					new_w = merge_powers(new_w)
+					print("neww =", new_w)
+					exponent_values = {}
+					if not check_inclusion(new_w, powers, exponent_values) \
+					or not check_conditions(new_w, conditions, exponent_values):
+						k_bool_acc = False
+						data["k_stop"] = k
+						break
+				if k_bool_acc:
+					xyz_bool_acc = True
 					break
-			if k_bool_acc:
-				xyz_bool_acc = True
-				break
-		if not xyz_bool_acc:
+			if xyz_bool_acc:
+				pump_bool_acc = True
+				break;
+		if not pump_bool_acc:
 			data["no_w_stop"] = i
 			data["res"] = 0
 			print("Non-regular language")
