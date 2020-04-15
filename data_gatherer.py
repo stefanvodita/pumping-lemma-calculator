@@ -60,8 +60,10 @@ def gather(in_file, outputs, tries):
 			[lang_desc, verdict] = lang_desc.split(' ')
 			lang_desc.strip()
 			verdict.strip()
-			write_data(outputs, lang_desc, verdict, average(lang_desc, tries))
-
+			if tries > 1:
+				write_data(outputs, lang_desc, verdict, average(lang_desc, tries))
+			else:
+				write_data(outputs, lang_desc, verdict, main.main(lang_desc))
 
 if __name__ == "__main__":
-	gather("inputs", open("data.csv", "a"), 3)
+	gather("inputs", open("out", "a"), 3)

@@ -104,7 +104,7 @@ def min_len(powers):
 
 
 def check_conditions(w, conditions, exponent_values):
-	return parser.parse(conditions, w, exponent_values)
+	return parser.check_conditions(conditions, w, exponent_values)
 
 
 def choose_random_word(powers, conditions):
@@ -122,7 +122,7 @@ def choose_random_word(powers, conditions):
 				if power in exponent_value:
 					w.append((base, exponent_value[power]))
 				else:
-					exponent_value[power] = randrange(0, max_exponent)
+					exponent_value[power] = randrange(1, max_exponent)  # don't allow missing powers
 					w.append((base, exponent_value[power]))
 			else:
 				w.append((base, power))
@@ -204,18 +204,48 @@ def pick_z(w, j):
 	return z
 
 
-def split_word(w, n):
+# def split_word(w, n):
+# 	"""
+# 	Return all possible x, y, z divisions as tuples in a list.
+# 	"""
+# 	res = []
+# 	for i in range(n):  # x has length i
+# 		x = pick_x(w, i)
+# 		for j in range(i + 1, n + 1):  # xy has length j
+# 			y = pick_y(w, i, j)
+# 			z = pick_z(w, j)
+# 			res.append((x, y, z))
+# 	return res
+
+
+def split_word(w, lower_bound, upper_bound):
 	"""
 	Return all possible x, y, z divisions as tuples in a list.
 	"""
 	res = []
-	for i in range(n):  # x has length i
+	for i in range(upper_bound - 1):  # x has length i
 		x = pick_x(w, i)
-		for j in range(i + 1, n + 1):  # xy has length j
+		for j in range(max(i + 1, lower_bound), upper_bound):  # xy has length j
 			y = pick_y(w, i, j)
 			z = pick_z(w, j)
 			res.append((x, y, z))
 	return res
+
+
+def get_variables(w):
+	vars = []
+	for (_, power) in w:
+		if power not in vars and type(power) == str:
+			vars.append(power)
+	return vars
+
+
+def is_finite(w, conditions):
+	vars_in_desc = get_variables(w)
+	print("vars_in_desc =", vars_in_desc)
+	vars_in_cond = parser.check_finite(conditions)
+	print("vars_in_cond =", vars_in_cond)
+	return set(vars_in_desc).issubset(vars_in_cond)
 
 
 def word_power(w, k):
@@ -342,54 +372,58 @@ def main(lang_desc):
 	element = element.strip()
 	conditions = conditions.strip()
 
-	data = {"k_stop" : None, "no_w_stop" : None, "res" : None}
+	data = {"k_stop" : None, "no_w_stop" : None, "res" : 1}
 
 	powers = parse_element(element)
+
+	if is_finite(powers, conditions):
+		print("Finite language")
+		return data
+
 	for i in range(w_picks):  # try this many times
-		pump_bool_acc = False
 		_, w = choose_random_word(powers, conditions)
-		for pumping_len in range(1, compute_len(w) + 1):
-			print("pumping_len =", pumping_len)
-			xyz = split_word(w, pumping_len)
-			xyz_bool_acc = False  # True = at least one xyz validates the lemma
-								  # False = no xyz validates the lemma
-			for x, y, z in xyz:
-				print("x, y, z =", x, y, z)
-				k_bool_acc = True  # True = all k validate the lemma
-				                   # False = there is at least one k
-				                   #         that invalidates the lemma
-				for k in range(2, k_picks):  # try consecutive k
-					y_pow_k = word_power(y, k)
-					print("y^k = ", y_pow_k)
-					new_w = x + y_pow_k + z
-					new_w = merge_powers(new_w)
-					print("neww =", new_w)
-					exponent_values = {}
-					if not check_inclusion(new_w, powers, exponent_values) \
-					or not check_conditions(new_w, conditions, exponent_values):
-						k_bool_acc = False
-						data["k_stop"] = k
-						break
-				if k_bool_acc:
-					xyz_bool_acc = True
+		# for pumping_len in range(len(powers) + 1, compute_len(w) + 1):
+		if len(powers) >= compute_len(w):  # no xyz split will be possible
+			continue
+		xyz = split_word(w, len(powers) + 1, compute_len(w) + 1)
+		xyz_bool_acc = False  # True = at least one xyz validates the lemma
+							  # False = no xyz validates the lemma
+		for x, y, z in xyz:
+			print("x, y, z =", x, y, z)
+			k_bool_acc = True  # True = all k validate the lemma
+			                   # False = there is at least one k
+			                   #         that invalidates the lemma
+			for k in range(2, k_picks):  # try consecutive k
+				y_pow_k = word_power(y, k)
+				print("y^k = ", y_pow_k)
+				new_w = x + y_pow_k + z
+				new_w = merge_powers(new_w)
+				print("neww =", new_w)
+				exponent_values = {}
+				if not check_inclusion(new_w, powers, exponent_values) \
+				or not check_conditions(new_w, conditions, exponent_values):
+					k_bool_acc = False
+					data["k_stop"] = k
 					break
-			if xyz_bool_acc:
-				pump_bool_acc = True
-				break;
-		if not pump_bool_acc:
+			if k_bool_acc:
+				xyz_bool_acc = True
+				break
+		if not xyz_bool_acc:
 			data["no_w_stop"] = i
 			data["res"] = 0
 			print("Non-regular language")
 			return data
 	data["k_stop"] = None
 	data["no_w_stop"] = None
-	data["res"] = 1
 	print("Regular language... probably")
 	return data
 
 
 if __name__ == "__main__":
 	print(main(input()))
+	# ipdb.set_trace()
+	# print(split_word([('a', 3)], 3, 4))
+	# print(pick_y([('a', 3)], 1, 2))
 
 '''
 Problems:

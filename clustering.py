@@ -24,6 +24,7 @@ def cluster(dataset, cluster_count, rnd_seed):
 	ax.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], X[y_kmeans == 0, 2], c="red")
 	ax.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], X[y_kmeans == 1, 2], c="blue")
 	ax.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], X[y_kmeans == 2, 2], c="green")
+	ax.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], X[y_kmeans == 3, 2], c="magenta")
 	# ax.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], kmeans.cluster_centers_[:, 2], c="cyan")
 
 	ax.set_xlabel('k stop')
@@ -67,4 +68,4 @@ if __name__ == "__main__":
 	dataset = feature_scaling(extract_data("data.csv", [4, 5, 6], [-1, -10, -1]), [1, 1/10, 10])
 	print("dataset =", dataset)
 	elbow(dataset, 10, rnd_seed)
-	cluster(dataset, 3, rnd_seed)
+	cluster(dataset, 4, rnd_seed)
