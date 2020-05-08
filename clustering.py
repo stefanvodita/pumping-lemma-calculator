@@ -11,6 +11,12 @@ from sklearn.cluster import KMeans
 
 
 rnd_seed = 42
+input_file_name = "data.csv"
+columns = [4, 5, 6]
+nan_replace = [-1, -10, -1]
+scale_factor = [1, 0.1, 10]
+max_cluster_count = 10
+cluster_count = 4
 
 
 def cluster(dataset, cluster_count, rnd_seed):
@@ -50,22 +56,34 @@ def elbow(dataset, max_clusters, rnd_seed):
 
 
 def extract_data(data_file_name, cols, nan_replace):
-	dataset = pandas.read_csv(data_file_name, comment='#').iloc[:, cols].values
-	# dataset[numpy.isnan(dataset)] = nan_replace
+	dataset = pandas.read_csv(data_file_name, comment='#').iloc[:, 1:].values
+
+	pos = dataset[dataset[:, 5] == 1]
+	neg = dataset[dataset[:, 5] < 1]
+	fpos = pos[pos[:, 6] == 0]
+	fneg = neg[neg[:, 6] == 1]
+
+	print(len(fpos)/len(pos))  # false positive rate
+	print(len(fneg)/len(neg))  # false negative rate
+
+	dataset = dataset[dataset[:, 5] < 1]	# delete regular claims
+	dataset = dataset[dataset[:, 6] == 0]	# delete expected regulars
+	dataset = dataset[:, cols]
+
 	for i in range(len(cols)):
 		dataset[numpy.isnan(dataset[:, i]), i] = nan_replace[i]
 	return dataset
 
 
 def feature_scaling(dataset, scalars):
-	# return preprocessing.scale(dataset)
 	for i in range(len(scalars)):
 		dataset[:, i] *= scalars[i]
 	return dataset
 
 
 if __name__ == "__main__":
-	dataset = feature_scaling(extract_data("data.csv", [4, 5, 6], [-1, -10, -1]), [1, 1/10, 10])
+	columns = [x - 1 for x in columns]  # ignore first column (language description)
+	dataset = feature_scaling(extract_data(input_file_name, columns, nan_replace), scale_factor)
 	print("dataset =", dataset)
-	elbow(dataset, 10, rnd_seed)
-	cluster(dataset, 4, rnd_seed)
+	elbow(dataset, max_cluster_count, rnd_seed)
+	cluster(dataset, cluster_count, rnd_seed)

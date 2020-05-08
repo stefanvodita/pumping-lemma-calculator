@@ -1,11 +1,11 @@
 from random import randrange
 
-import ipdb
 import parser
 
 
-alphabet = "ab"		# all characters in the alphabet in a string
-variables = "NM"	# all variables in a string
+conf = 2  # conf in {1, 2, 3}
+alphabet = "abcdefghijklmnopqrstuvwxyz"		# all characters in the alphabet in a string
+variables = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"	# all variables in a string
 w_picks = 100		# we try 100 different, random words
 k_picks = 10		# we try k in range(k_picks)
 max_exponent = 25	# no point in picking a^100 when the language is a^n
@@ -204,21 +204,22 @@ def pick_z(w, j):
 	return z
 
 
-# def split_word(w, n):
-# 	"""
-# 	Return all possible x, y, z divisions as tuples in a list.
-# 	"""
-# 	res = []
-# 	for i in range(n):  # x has length i
-# 		x = pick_x(w, i)
-# 		for j in range(i + 1, n + 1):  # xy has length j
-# 			y = pick_y(w, i, j)
-# 			z = pick_z(w, j)
-# 			res.append((x, y, z))
-# 	return res
+def split_word1(w, n):
+	"""
+	Return all possible x, y, z divisions as tuples in a list.
+	n is the upper bound.
+	"""
+	res = []
+	for i in range(n):  # x has length i
+		x = pick_x(w, i)
+		for j in range(i + 1, n + 1):  # xy has length j
+			y = pick_y(w, i, j)
+			z = pick_z(w, j)
+			res.append((x, y, z))
+	return res
 
 
-def split_word(w, lower_bound, upper_bound):
+def split_word2(w, lower_bound, upper_bound):
 	"""
 	Return all possible x, y, z divisions as tuples in a list.
 	"""
@@ -372,7 +373,7 @@ def main(lang_desc):
 	element = element.strip()
 	conditions = conditions.strip()
 
-	data = {"k_stop" : None, "no_w_stop" : None, "res" : 1}
+	data = {"k_stop" : 10, "no_w_stop" : 100, "res" : 1}
 
 	powers = parse_element(element)
 
@@ -381,11 +382,24 @@ def main(lang_desc):
 		return data
 
 	for i in range(w_picks):  # try this many times
-		_, w = choose_random_word(powers, conditions)
-		# for pumping_len in range(len(powers) + 1, compute_len(w) + 1):
+		pumping_len, w = choose_random_word(powers, conditions)
+
 		if len(powers) >= compute_len(w):  # no xyz split will be possible
 			continue
-		xyz = split_word(w, len(powers) + 1, compute_len(w) + 1)
+
+		# configure
+		if conf == 1:
+			xyz = split_word1(w, pumping_len)
+		elif conf == 2:
+			if len(powers) >= pumping_len:  # no xyz split will be possible
+				continue
+			xyz = split_word2(w, len(powers) + 1, pumping_len + 1)
+		elif conf == 3:
+			xyz = split_word2(w, len(powers) + 1, compute_len(w) + 1)
+		else:
+			continue
+
+
 		xyz_bool_acc = False  # True = at least one xyz validates the lemma
 							  # False = no xyz validates the lemma
 		for x, y, z in xyz:
@@ -393,7 +407,7 @@ def main(lang_desc):
 			k_bool_acc = True  # True = all k validate the lemma
 			                   # False = there is at least one k
 			                   #         that invalidates the lemma
-			for k in range(2, k_picks):  # try consecutive k
+			for k in range(2, k_picks):  # try consecutive k, but not 0 or 1
 				y_pow_k = word_power(y, k)
 				print("y^k = ", y_pow_k)
 				new_w = x + y_pow_k + z
@@ -413,34 +427,11 @@ def main(lang_desc):
 			data["res"] = 0
 			print("Non-regular language")
 			return data
-	data["k_stop"] = None
-	data["no_w_stop"] = None
+	data["k_stop"] = 10
+	data["no_w_stop"] = 100
 	print("Regular language... probably")
 	return data
 
 
 if __name__ == "__main__":
 	print(main(input()))
-	# ipdb.set_trace()
-	# print(split_word([('a', 3)], 3, 4))
-	# print(pick_y([('a', 3)], 1, 2))
-
-'''
-Problems:
-
-aaa^n. Pick w = aa, p.len = 1. x = '', y = a, k = 0.
-Fixed by making p.len bigger than minnimum word len
-
-This doesn not work with finite sets. Easy to add a condition.
-Should I?
-
-a^nb
-Fixed
-
-
-a^N|N>5. x='', y=a, z=5*a, n=1, k=0
-Maybe k != 0 after all.
-DONE
-
-Multiple solutions for exponent matching?
-'''

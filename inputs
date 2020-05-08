@@ -46,3 +46,24 @@ a^Nb^M|N-M>5. 0
 a^Nb^M|N-M<5. 0
 a^Nb^M|N*M>5. 1
 a^Nb^M|N*M<5. 1
+#
+a^Nb^Mc^P|. 1
+a^Nb^Mc^P|N>5. 1
+#
+a^Nb^Mc^P|M==P. 0
+a^Nb^Mc^P|N==M+P. 0
+a^Nb^Mc^P|N>M+P. 0
+a^Nb^Mc^P|N>M*P. 0
+a^Nb^Mc^P|N>M-P. 0
+a^Nb^Mc^P|N>M,N>P. 0
+a^Nb^Mc^P|N>M,M>P. 0
+a^Nb^Mc^P|N!=M,M!=P. 0
+a^Nb^Mc^P|N>P,M>P. 0
+#
+a^Nb^Mc^P|N<M+P. 0
+a^Nb^Mc^P|N<M*P. 0
+a^Nb^Mc^P|N<M-P. 0
+a^Nb^Mc^P|N<M,N<P. 0
+a^Nb^Mc^P|N<M,M<P. 0
+a^Nb^Mc^P|N==M,M==P. 0
+a^Nb^Mc^P|N<P,M<P. 0

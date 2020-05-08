@@ -13,4 +13,11 @@ in
 out
 
 # graphs
-*.png
+#*.png
+
+# tex files
+tex
+
+# csv file
+csv
+
