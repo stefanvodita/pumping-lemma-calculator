@@ -2,6 +2,20 @@
 
 This projects provides a calculator for formal language regularity, based on randomizing the pumping lemma's variables.
 
+## Contents
+* graphs/ - ellbow and cluster graphs for the inputs in the repo
+* .gitignore
+* Makefile
+* Pumping_Lemma_Calculator.pdf - paper
+* README.md
+* clustering.py - clustering module
+* conditions.g4 - antlr4 grammar for language conditions
+* csv_sort.py - csv sorting module
+* data_gatherer.py - data gathering module
+* inputs - 59 languages on which the paper is based
+* main.py - the calculator
+* parser.py - parser interface used by the calculator
+* scss.pptx - presentation support in Romanian for UPB's 2020 Students' Scientific Communications Session
 
 ## How to use
 ### Calculator
@@ -34,6 +48,13 @@ The csv file will have the following columns:
 * result: regular/non-regular, 0/1
 * correct response: regular/non-regular, 0/1
 
+### Sorting the csv file
+This step is not necessary, but if you want to order your languages based on a particular characteristic, you can.
+```
+python3 csv_sort.py
+```
+
+
 ### Clustering
 ```
 python3 clustering.py
@@ -46,4 +67,6 @@ This is used by the calculator for checking the conditions and should not be int
 
 
 ## Dependencies
-The project was developed in Python 3.6.9 with the corresponding antlr version for parsing of the conditions.
+The project was developed in Python 3.6.9 with the corresponding antlr4 version for parsing of the conditions.
+
+
