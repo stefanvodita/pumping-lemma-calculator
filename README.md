@@ -18,6 +18,12 @@ This projects provides a calculator for formal language regularity, based on ran
 * scss.pptx - presentation support in Romanian for UPB's 2020 Students' Scientific Communications Session
 
 ## How to use
+### Generate the ANTLR lexer, listener, and parser
+Install ANTLR4 (see [documentation](https://github.com/antlr/antlr4/blob/master/doc/getting-started.md)), then run:
+```
+antlr4 -Dlanguage=Python3 conditions.g4
+```
+
 ### Calculator
 ```
 python3 main.py
